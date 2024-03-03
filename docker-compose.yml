@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  nodejs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nodejs-container1
+    ports:
+      - "4000:4000"
+    environment:
+      MONGO_URI: mongodb://mongo:27017/ecommerce1 # Update the MongoDB URI to connect to the MongoDB service
+    depends_on:
+      - mongo
+    # restart: unless-stopped
+
+  mongo:
+    container_name: mongodb-container1
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - '27017:27017'
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]  # Health check command for MongoDB
+      interval: 10s
+      retries: 5
